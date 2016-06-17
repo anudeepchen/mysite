@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .forms import RegisterForm
 from .models import User_Profile
-from django.template.context_processors import csrf
+from django.core.context_processors import csrf
 from django.contrib import messages
 from django.shortcuts import render, render_to_response, RequestContext, HttpResponseRedirect
 from django.contrib.auth.hashers import make_password,check_password
@@ -35,8 +35,8 @@ def register_user(request):
                 new_user.first_name = form.cleaned_data['first_name']
                 new_user.last_name = form.cleaned_data['last_name']
                 new_user.save()
-                    
-                new_form = User_Profile(email=email,phone=phone,promo_code=promo_code,location=location)
+                
+                new_form = User_Profile(user=new_user,email=email,phone=phone,promo_code=promo_code,location=location)
                 new_form.save()
                 return HttpResponseRedirect('/')
             else :
