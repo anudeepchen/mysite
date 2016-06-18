@@ -41,6 +41,7 @@ def register_user(request):
                 
                 user = {"firstName" : first_name,"lastName" : last_name,"location" : location,"phone": phone}
                 collection.insert_one(user)
+                messages.success(request,"Thank you for registering")
                 return HttpResponseRedirect('/')
             else :
                 messages.error(request, "There is an error in your submission!")
