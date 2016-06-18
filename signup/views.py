@@ -9,10 +9,10 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
+from pymongo import MongoClient
+
 # Create your views here.
 
-# Method calls the register.html form allowing user to enter his personal information       
-# Method calls the register.html form allowing user to enter his personal information       
 def register(request):
     context = {"form" : RegisterForm()}
     context.update(csrf(request))
@@ -26,22 +26,23 @@ def register_user(request):
         form = RegisterForm(request.POST)
         try :
             if form.is_valid():
+                
+                client = MongoClient('mongodb://admin:candoit@ds013182.mlab.com:13182/fooddb')
+                db = client.fooddb
+
+                collection = db['_User']
+                
                 email = form.cleaned_data['email']
                 location = form.cleaned_data['location']
                 phone = form.cleaned_data['phone']
                 promo_code = form.cleaned_data['promo_code']
-                new_user = User.objects.create_user(email,
-                                        form.cleaned_data['password'])
-                new_user.first_name = form.cleaned_data['first_name']
-                new_user.last_name = form.cleaned_data['last_name']
-                new_user.email = email
-                new_user.save()
-                    
-                new_form = User_Profile(user=new_user,phone=phone,promo_code=promo_code,location=location)
-                new_form.save()
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                
+                user = {"firstName" : first_name,"lastName" : last_name,"location" : location,"phone": phone}
+                collection.insert_one(user)
                 return HttpResponseRedirect('/')
             else :
-                print "erroorrrrrr",form.errors
                 messages.error(request, "There is an error in your submission!")
         except IntegrityError:
             messages.error(request, "The email you entered already exists!")
