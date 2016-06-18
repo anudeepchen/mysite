@@ -44,9 +44,9 @@ def register_user(request):
                 messages.success(request,"Thank you for registering")
                 return HttpResponseRedirect('/')
             else :
-                messages.error(request, "There is an error in your submission!")
+                messages.warning(request, "There is an error in your submission!")
         except IntegrityError:
-            messages.error(request, "The email you entered already exists!")
+            messages.warning(request, "The email you entered already exists!")
     else : form = RegisterForm()
     context = {"form" : form}
     template = "student_register.html"     
