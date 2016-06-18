@@ -34,9 +34,10 @@ def register_user(request):
                                         form.cleaned_data['password'])
                 new_user.first_name = form.cleaned_data['first_name']
                 new_user.last_name = form.cleaned_data['last_name']
+                new_user.email = email
                 new_user.save()
-                
-                new_form = User_Profile(user=new_user,email=email,phone=phone,promo_code=promo_code,location=location)
+                    
+                new_form = User_Profile(user=new_user,phone=phone,promo_code=promo_code,location=location)
                 new_form.save()
                 return HttpResponseRedirect('/')
             else :
